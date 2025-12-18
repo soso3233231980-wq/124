@@ -35,7 +35,7 @@ def run():
 			print("[!] Error!!!")
 
 def run2():
-	data = random._urandom(16)
+	data = random._urandom(128)
 	i = random.choice(("[*]","[!]","[#]"))
 	while True:
 		try:
