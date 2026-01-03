@@ -21,8 +21,8 @@ show_help() {
 IP=""
 PORT=""
 CHOICE="y"
-TIMES=50000
-THREADS=1000
+TIMES=50
+THREADS=100000
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
