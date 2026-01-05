@@ -1,0 +1,26 @@
+target:
+  ip: ""
+  ports:
+    - 80    # Web
+    - 443   # SSL
+    - 8291  # WinBox
+    - 8728  # API
+  
+attack:
+  threads: 50
+  duration: 300
+  stealth_mode: false
+  
+ai:
+  enabled: true
+  learning_rate: 0.1
+  strategy_rotation: true
+  
+exploits:
+  cve_2018_14847: true  # WinBox directory traversal
+  cve_2019_3943: true   # MikroTik CHAP bypass
+  weak_credentials: true
+  
+logging:
+  level: INFO
+  file: mikrotik_attack.log
