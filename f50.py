@@ -1,5 +1,3 @@
-AS12975 – PALTEL Autonomous System
-paltel.ps
-ISP
-RIPE
-212.14.245.59 --> test service 
+PALTEL Autonomous System
+<-- Paltel --> technical service team
+anti cyber security attack
